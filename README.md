@@ -562,6 +562,3 @@ uv run gunicorn pyapi.web.application:get_app \
     --workers 4 \
     --bind 0.0.0.0:8000
 ```
-"# python_backend_api" 
-"# python_backend_api" 
-"# python_backend_api" 
