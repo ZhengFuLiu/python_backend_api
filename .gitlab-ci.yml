@@ -1,0 +1,50 @@
+# .gitlab-ci.yml
+stages:
+  - "test"
+
+.test-template:
+  stage: test
+  image: python:3.11.4-slim-bullseye
+  # 你的 runner tags
+  # tags:
+  #   - your-runner-tag
+  except:
+    - tags
+  before_script:
+    - apt update && apt install -y git curl
+    # 安裝 uv
+    - curl -LsSf https://astral.sh/uv/install.sh | sh
+    - export PATH="$HOME/.cargo/bin:$PATH"
+    - uv --version
+    # 安裝專案依賴
+    - uv sync --dev
+    - uv run pre-commit install
+
+black:
+  extends:
+    - .test-template
+  script:
+    - uv run pre-commit run black --all-files
+
+ruff:
+  extends:
+    - .test-template
+  script:
+    - uv run pre-commit run ruff --all-files
+
+mypy:
+  extends:
+    - .test-template
+  script:
+    - uv run pre-commit run mypy --all-files
+
+pytest:
+  extends:
+    - .test-template
+  script:
+    - uv run pytest tests/ -v --cov=pyapi
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml

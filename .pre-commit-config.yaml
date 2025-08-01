@@ -1,0 +1,27 @@
+---
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+    - repo: https://github.com/psf/black
+      rev: 24.8.0
+      hooks:
+          - id: black
+            language_version: python3
+
+    - repo: https://github.com/astral-sh/ruff-pre-commit
+      rev: v0.6.9
+      hooks:
+          - id: ruff
+            args: ["--fix"]
+          - id: ruff-format
+
+    # 使用本地的 MyPy，避免類型包問題
+    - repo: local
+      hooks:
+          - id: mypy
+            name: Validate types with MyPy
+            entry: uv run mypy
+            language: system
+            types: [python]
+            args: ["--ignore-missing-imports", "pyapi"]
+            pass_filenames: false

@@ -1,0 +1,13 @@
+services:
+  api: &main_app
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: pyapi:${PYAPI_VERSION:-latest}
+    restart: always
+    env_file:
+      - .env
+    environment:
+      PYAPI_HOST: 0.0.0.0
+
+
